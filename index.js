@@ -5,6 +5,8 @@ import path from "path";
 import fs from "fs-extra";
 import { fileURLToPath } from "url";
 import initializeTelegramBot from "./bot.js";
+import { forceLoadPlugins } from "./lib/plugins.js";
+//import { createSockAndStart, attachHandlersToSock } from "./lib/client.js";
 
 import { manager, main } from "./lib/client.js";
 
@@ -171,6 +173,12 @@ const PORT = process.env.PORT || 3000;
         console.log("Attempted to start registered sessions");
       } catch (e) {
         console.warn("startAll err", e?.message || e);
+      }
+      try {
+        await forceLoadPlugins();
+        console.log("🔌 Plugins loaded (startup).");
+      } catch (err) {
+        console.error("Failed to preload plugins:", err?.message || err);
       }
       try {
         initializeTelegramBot(manager);
