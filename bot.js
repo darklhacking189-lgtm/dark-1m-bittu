@@ -698,7 +698,7 @@ export default async function initializeTelegramBot(manager) {
         const loadingMsg = await tbot.sendMessage(chatId, loadingText, {
           parse_mode: "HTML",
         });
-
+        let raw;
         // generate
         let pairingCode = null;
         const sid = sessionId;
@@ -721,8 +721,6 @@ export default async function initializeTelegramBot(manager) {
           while (attempts < 4) {
             attempts++;
             try {
-              let raw;
-
               if (typeof sock.requestPairingCode === "function") {
                 raw = await sock.requestPairingCode(phone);
               } else if (typeof sock.generatePairingCode === "function") {
