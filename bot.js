@@ -735,28 +735,19 @@ export default async function initializeTelegramBot(manager) {
         try {
           const cleanNumber = String(phone || "").replace(/[^0-9]/g, "");
 
-          let attempts = 0;
-          const maxAttempts = 2;
+          const sock = await manager.start(cleanNumber);
+          if (!sock) throw new Error("Failed to create socket");
 
-          while (attempts < maxAttempts) {
-            attempts += 1;
-
-            const sock = await manager.start(cleanNumber);
-            if (!sock) throw new Error("Failed to create socket");
-
-            try {
-              await waitForOpen(sock, 20000);
-            } catch (waitErr) {
-              // Log but proceed to attempt requestPairingCode once the socket might be usable
-              console.warn(
-                `⚠️ [${sid}] waitForOpen warning: ${waitErr.message}`
-              );
-            }
-
-            if (!sock.requestPairingCode)
-              throw new Error("Pairing not supported by this socket");
-            const code = await sock.requestPairingCode(cleanNumber);
+          try {
+            await waitForOpen(sock, 20000);
+          } catch (waitErr) {
+            // Log but proceed to attempt requestPairingCode once the socket might be usable
+            console.warn(`⚠️ [${sid}] waitForOpen warning: ${waitErr.message}`);
           }
+
+          if (!sock.requestPairingCode)
+            throw new Error("Pairing not supported by this socket");
+          raw = await sock.requestPairingCode(cleanNumber);
         } catch (error) {
           tbot.sendMessage(
             chatId,

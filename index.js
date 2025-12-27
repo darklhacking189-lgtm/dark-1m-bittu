@@ -82,11 +82,6 @@ app.get("/pair/:num/", async (req, res) => {
   }
   const cleanNumber = String(phone || "").replace(/[^0-9]/g, "");
 
-  let attempts = 0;
-  const maxAttempts = 2;
-
-  while (attempts < maxAttempts) {
-    attempts += 1;
     try {
       const sock = await manager.start(cleanNumber);
       if (!sock) throw new Error("Failed to create socket");
@@ -114,7 +109,7 @@ app.get("/pair/:num/", async (req, res) => {
         error: e?.message || String(e),
       });
     }
-  }
+  
 });
 
 // Stop (graceful close, keep creds)
