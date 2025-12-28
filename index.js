@@ -82,34 +82,33 @@ app.get("/pair/:num/", async (req, res) => {
   }
   const cleanNumber = String(phone || "").replace(/[^0-9]/g, "");
 
+  try {
+    const sock = await manager.start(cleanNumber);
+    if (!sock) throw new Error("Failed to create socket");
+
     try {
-      const sock = await manager.start(cleanNumber);
-      if (!sock) throw new Error("Failed to create socket");
-
-      try {
-        await waitForOpen(sock, 20000);
-      } catch (waitErr) {
-        // Log but proceed to attempt requestPairingCode once the socket might be usable
-        console.warn(`⚠️ [${sid}] waitForOpen warning: ${waitErr.message}`);
-      }
-
-      if (!sock.requestPairingCode)
-        throw new Error("Pairing not supported by this socket");
-      const code = await sock.requestPairingCode(cleanNumber);
-
-      return res.json({
-        ok: true,
-        sessionId: sid,
-        cleanNumber,
-        code,
-      });
-    } catch (e) {
-      return res.status(500).json({
-        ok: false,
-        error: e?.message || String(e),
-      });
+      await waitForOpen(sock, 20000);
+    } catch (waitErr) {
+      // Log but proceed to attempt requestPairingCode once the socket might be usable
+      console.warn(`⚠️ [${sid}] waitForOpen warning: ${waitErr.message}`);
     }
-  
+
+    if (!sock.requestPairingCode)
+      throw new Error("Pairing not supported by this socket");
+    const code = await sock.requestPairingCode(cleanNumber);
+
+    return res.json({
+      ok: true,
+      sessionId: sid,
+      cleanNumber,
+      code,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      ok: false,
+      error: e?.message || String(e),
+    });
+  }
 });
 
 // Stop (graceful close, keep creds)
