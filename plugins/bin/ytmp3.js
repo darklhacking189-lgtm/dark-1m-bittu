@@ -95,9 +95,9 @@ async function songCommand(Aliconn, searchQuery, message) {
           contextInfo: {
             externalAdReply: {
               title: dataa.title,
-              body: "ᴘσωєʀє∂ ву 𝖐𝚊𝚒𝚜𝖊𝖓 𝙼ԃ",
+              body: "Pᴏᴡᴇʀᴇᴅ Bʏ Rᴀʙʙɪᴛ Xᴍᴅ",
               mediaType: 1,
-              sourceUrl: "https://youtube.com",
+              sourceUrl: "https://whatsapp.com/channel/0029Vb78tz8BfxoEiAFeUq3f",
               thumbnailUrl: dataa.thumbnail,
             },
           },
@@ -165,9 +165,9 @@ async function songCommand(Aliconn, searchQuery, message) {
         contextInfo: {
           externalAdReply: {
             title: `${datas.title}`,
-            body: "ᴘσωєʀє∂ ву 𝖐𝚊𝚒𝚜𝖊𝖓 𝙼ԃ",
+            body: "Pᴏᴡᴇʀᴇᴅ Bʏ Rᴀʙʙɪᴛ Xᴍᴅ",
             mediaType: 1,
-            sourceUrl: "https://youtube.com",
+            sourceUrl: "https://whatsapp.com/channel/0029Vb78tz8BfxoEiAFeUq3f",
             thumbnailUrl: datas.thumbnail,
           },
         },
