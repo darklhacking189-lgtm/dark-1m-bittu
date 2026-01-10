@@ -3,17 +3,16 @@ import { Module, getCommands } from "../lib/plugins.js";
 import { getRandomPhoto } from "./bin/menu_img.js";
 import config from "../config.js";
 
-const name = "X-kira ━ 𝐁𝕺𝐓";
-const runtime = (secs) => {
+const readMore = String.fromCharCode(8206).repeat(4001);
+
+function runtime(secs) {
   const pad = (s) => s.toString().padStart(2, "0");
   const h = Math.floor(secs / 3600);
   const m = Math.floor((secs % 3600) / 60);
   const s = Math.floor(secs % 60);
   return `${pad(h)}h ${pad(m)}m ${pad(s)}s`;
-};
-const readMore = String.fromCharCode(8206).repeat(4001);
+}
 
-// Build grouped commands from current plugin list (uses snapshot getter)
 function buildGroupedCommands() {
   const cmds = getCommands();
   return cmds
@@ -26,47 +25,43 @@ function buildGroupedCommands() {
     }, {});
 }
 
-// Menu command
+// ================== Rabbit-Style Menu with Channel Forward ==================
 Module({
   command: "menu",
   package: "general",
-  description: "Show all commands or a specific package",
+  description: "Show all commands in Rabbit-style with channel forward",
 })(async (message, match) => {
   try {
     await message.react("📜");
-    const time = new Date().toLocaleTimeString("en-ZA", {
-      timeZone: "Africa/Johannesburg",
+
+    const time = new Date().toLocaleTimeString("en-IN", {
+      timeZone: "Asia/Kolkata",
     });
-    const mode = config.WORK_TYPE || process.env.WORK_TYPE;
     const userName = message.pushName || "User";
     const usedGB = ((os.totalmem() - os.freemem()) / 1073741824).toFixed(2);
     const totGB = (os.totalmem() / 1073741824).toFixed(2);
     const ram = `${usedGB} / ${totGB} GB`;
 
-    // Build grouped commands
-  const grouped = buildGroupedCommands();
-const categories = Object.keys(grouped).sort();
-let _cmd_st = "";
+    const grouped = buildGroupedCommands();
+    const categories = Object.keys(grouped).sort();
+    let _cmd_st = "";
 
-if (match && grouped[match.toLowerCase()]) {
-  const pack = match.toLowerCase();
-  _cmd_st += `\n *╭────❒ ${pack.toUpperCase()} ❒*\n`;
-  grouped[pack]
-    .sort((a, b) => a.localeCompare(b))
-    .forEach((cmdName) => {
-      _cmd_st += ` *├◈ ${cmdName}*\n`;
-    });
-  _cmd_st += ` *┕──────────────────❒*\n`;
-} else {
-  _cmd_st += `
+    if (match && grouped[match.toLowerCase()]) {
+      const pack = match.toLowerCase();
+      _cmd_st += `\n *╭────❒ ${pack.toUpperCase()} ❒*\n`;
+      grouped[pack].sort().forEach((cmdName) => {
+        _cmd_st += ` *├◈ ${cmdName}*\n`;
+      });
+      _cmd_st += ` *┕──────────────────❒*\n`;
+    } else {
+      _cmd_st += `
 ╔〔 🧚‍♀️*Rᴀʙʙɪᴛ Xᴍᴅ Mɪɴɪ*💐〕╗
  *👋 Hᴇʟʟᴏ, Rᴀʙʙɪᴛ Xᴍᴅ Mɪɴɪ Usᴇʀ!*
 ╚══════════════════════╝
 
 ╭─「 *Cᴏᴍᴍᴀɴᴅ Pᴀɴᴇʟ* 」
-│🔹 *𝐎ᴡɴᴇʀ*    : 𝐌ʀ 𝐑ᴀʙʙɪᴛ
 │🔹 *Rᴜɴ*     : ${runtime(process.uptime())}
-│🔹 *Mᴏᴅᴇ*    : Pᴜʙʟɪᴄ
+│🔹 *Mᴏᴅᴇ*    : Public
 │🔹 *Pʀᴇғɪx*  : ${config.prefix}
 │🔹 *Rᴀᴍ*     : ${ram}
 │🔹 *Tɪᴍᴇ*    : ${time}
@@ -75,44 +70,32 @@ if (match && grouped[match.toLowerCase()]) {
 ${readMore}
 `;
 
-  if (match && !grouped[match.toLowerCase()]) {
-    _cmd_st += `\n⚠️ *Pᴀᴄᴋᴀɢᴇ Nᴏᴛ Fᴏᴜɴᴅ : ${match}*\n\n`;
-    _cmd_st += `*Aᴠᴀɪʟᴀʙʟᴇ Pᴀᴄᴋᴀɢᴇs* :\n`;
-    categories.forEach((cat) => {
-      _cmd_st += `├◈ ${cat}\n`;
-    });
-  } else {
-    for (const cat of categories) {
-      _cmd_st += `\n *╭────❒ ${cat.toUpperCase()} ❒*\n`;
-      grouped[cat]
-        .sort((a, b) => a.localeCompare(b))
-        .forEach((cmdName) => {
+      for (const cat of categories) {
+        _cmd_st += `\n *╭────❒ ${cat.toUpperCase()} ❒*\n`;
+        grouped[cat].sort().forEach((cmdName) => {
           _cmd_st += ` *├◈ ${cmdName}*\n`;
         });
-      _cmd_st += ` *┕──────────────────❒*\n`;
+        _cmd_st += ` *┕──────────────────❒*\n`;
+      }
+
+      _cmd_st += `\n *💐 𝐓ʜᴀɴᴋ 𝐘ᴏᴜ 𝐅ᴏʀ 𝐔sɪɴɢ 𝐑ᴀʙʙɪᴛ Xᴍᴅ 𝐁ᴏᴛ 💞*`;
     }
-  }
 
-  _cmd_st += `\n *💐 𝐓ʜᴀɴᴋ 𝐘ᴏᴜ 𝐅ᴏʀ 𝐔sɪɴɢ 𝐑ᴀʙʙɪᴛ Xᴍᴅ 𝐁ᴏᴛ 💞*`;
-}
+    const opts = {
+      image: { url: "https://www.rabbit.zone.id/pzf1km.jpg" },
+      caption: _cmd_st,
+      mimetype: "image/jpeg",
+      contextInfo: {
+        forwardingScore: 999,
+        isForwarded: true,
+        forwardedNewsletterMessageInfo: {
+          newsletterJid: "120363404737630340@newsletter",
+          newsletterName: "𝐑ᴀʙʙɪᴛ Xᴍᴅ",
+          serverMessageId: 6,
+        },
+      },
+    };
 
-const opts = {
-  image: { url: getRandomPhoto() || "https://www.rabbit.zone.id/pzf1km.jpg" },
-  caption: _cmd_st,
-  mimetype: "image/jpeg",
-  contextInfo: {
-    forwardingScore: 999,
-    isForwarded: true,
-    forwardedNewsletterMessageInfo: {
-      newsletterJid: "120363404737630340@newsletter",
-      newsletterName: "𝐑ᴀʙʙɪᴛ Xᴍᴅ",
-      serverMessageId: 6,
-    },
-  },
-};
-
-
-    // sendMessage: (jid, message) where message is an object like { image: {url}, caption, ... }
     await message.conn.sendMessage(message.from, opts);
   } catch (err) {
     console.error("❌ Menu command error:", err);
@@ -121,27 +104,3 @@ const opts = {
     });
   }
 });
-
-// List command
-Module({
-  command: "list",
-  package: "general",
-  description: "List all available commands",
-})(async (message) => {
-  try {
-    const aca = getCommands()
-      .filter((cmd) => cmd && cmd.command && cmd.command !== "undefined")
-      .map((cmd) => cmd.command)
-      .join("\n");
-    await message.conn.sendMessage(message.from, {
-      text: `*List:*\n${aca}`,
-    });
-  } catch (err) {
-    console.error("❌ List command error:", err);
-    await message.conn.sendMessage(message.from, {
-      text: `❌ Error: ${err?.message || err}`,
-    });
-  }
-});
-
-/
