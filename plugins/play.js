@@ -22,12 +22,8 @@ Module({
 
     const video = res.videos[0];
 
-    // Send Now Playing message
-await message.send(opts);
-    
-
-// 2️⃣ Caption (WITH Powered By)
-const caption = `
+    // 2️⃣ Caption (WITH Powered By)
+    const caption = `
 🎵 *Now Playing*
 
 Pᴏᴡᴇʀᴇᴅ Bʏ Rᴀʙʙɪᴛ Xᴍᴅ Mɪɴɪ
@@ -39,25 +35,23 @@ Pᴏᴡᴇʀᴇᴅ Bʏ Rᴀʙʙɪᴛ Xᴍᴅ Mɪɴɪ
 ⬇️ *Downloading audio...*
 `.trim();
 
-// 3️⃣ opts (YouTube thumbnail ব্যবহার হবে)
-const opts = {
-  image: { url: video.thumbnail }, // ✅ YouTube thumbnail
-  caption: caption,
-  mimetype: "image/jpeg",
-  contextInfo: {
-    forwardingScore: 999,
-    isForwarded: true,
-    forwardedNewsletterMessageInfo: {
-      newsletterJid: "120363404737630340@newsletter",
-      newsletterName: "𝐑ᴀʙʙɪᴛ Xᴍᴅ",
-      serverMessageId: 6,
-    },
-  },
-};
+    // 3️⃣ opts (YouTube thumbnail ব্যবহার হবে)
+    const opts = {
+      image: { url: video.thumbnail },
+      caption: caption,
+      mimetype: "image/jpeg",
+      contextInfo: {
+        forwardingScore: 999,
+        isForwarded: true,
+        forwardedNewsletterMessageInfo: {
+          newsletterJid: "120363404737630340@newsletter",
+          newsletterName: "𝐑ᴀʙʙɪᴛ Xᴍᴅ",
+          serverMessageId: 6,
+        },
+      },
+    };
 
-
-
-    // Send Now Playing message
+    // ✅ Send Now Playing message (এখানেই একবারই পাঠাবে)
     await message.send(opts);
 
     // 4️⃣ Call your API with YouTube link
