@@ -269,3 +269,49 @@ Module({
   );
 });
 */
+
+
+
+
+Module({
+  command: "mode",
+  package: "owner",
+  description: "Toggle bot mode (public / private)",
+})(async (message, match) => {
+  if (!message.isFromMe) return message.send(theme.isfromMe);
+
+  const botNumber = resolveBotNumber(message.conn);
+  if (!botNumber) return message.send("❌ Bot number not found.");
+
+  const input = match?.trim().toLowerCase();
+  const key = "mode"; // true = public, false = private
+
+  if (input === "public" || input === "private") {
+    await message.react("⏳");
+    try {
+      if (input === "public") {
+        db.setHot(botNumber, key, true);
+      } else {
+        db.setHot(botNumber, key, false);
+      }
+
+      await message.react("✅");
+      return message.send(
+        `✅ *Bot mode set to* \`${input.toUpperCase()}\``
+      );
+    } catch (err) {
+      await message.react("❌");
+      return message.send("❌ *Failed to update bot mode*");
+    }
+  }
+
+  const isPublic = db.get(botNumber, key, true) === true;
+
+  return message.send(
+    `⚙️ *Bot Mode*\n` +
+    `> Status: ${isPublic ? "🌍 PUBLIC" : "🔒 PRIVATE"}\n\n` +
+    `*Usage:*\n` +
+    `• mode public\n` +
+    `• mode private`
+  );
+});
