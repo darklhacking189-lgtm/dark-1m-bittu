@@ -2,24 +2,30 @@ import { Module } from '../lib/plugins.js';
 import { getTheme } from '../Themes/themes.js';
 const theme = getTheme();
 
+function isQuotedImage(message) {
+  return (
+    message.quoted &&
+    (
+      message.quoted.mtype === 'imageMessage' ||
+      message.quoted.message?.imageMessage
+    )
+  );
+}
+
 Module({
   command: "pp",
   package: "owner",
   description: "Set profile picture",
 })(async (message) => {
-  // owner check (FIXED)
   if (!message.isFromMe) return message.send(theme.isFromMe);
 
-  // quoted image check (FIXED)
-  if (!message.quoted || !message.quoted.imageMessage) {
+  if (!isQuotedImage(message)) {
     return message.send("❌ Reply to an image");
   }
 
   try {
-    // download image
     const buf = await message.quoted.download();
 
-    // SET OWN DP (FIXED – no setPp, no sender)
     await message.client.updateProfilePicture(
       message.client.user.id,
       buf
@@ -39,7 +45,7 @@ Module({
 })(async (message) => {
   if (!message.isFromMe) return message.send(theme.isFromMe);
 
-  if (!message.quoted || !message.quoted.imageMessage) {
+  if (!isQuotedImage(message)) {
     return message.send("❌ Reply to an image");
   }
 
