@@ -18,7 +18,7 @@ Module({
     `.trim();
 
     const opts = {
-      image: { url: "https://www.rabbit.zone.id/pzf1km.jpg" },
+      image: { url: "https://files.catbox.moe/z5aw6g.jpg" },
       caption: _cmd_st,
       mimetype: "image/jpeg",
       contextInfo: {
